@@ -15,4 +15,4 @@ public class EventoObtenerPez extends Evento {
         jugador.getInventario().addPez();
         System.out.println(jugador.getNombre() + " obtiene un pez.");
     }
-}
+ }
