@@ -16,4 +16,4 @@ public class EventoDadoLento extends Evento {
         jugador.getInventario().addDado(new DadoLento());
         System.out.println(jugador.getNombre() + " obtiene un dado lento.");
     }
-}
+ }
