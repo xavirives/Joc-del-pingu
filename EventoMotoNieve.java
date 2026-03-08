@@ -15,4 +15,4 @@ public class EventoMotoNieve extends Evento {
         juego.moverAlSiguienteTrineo(jugador);
         System.out.println(jugador.getNombre() + " encuentra una moto de nieve.");
     }
-}
+ }
