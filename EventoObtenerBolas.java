@@ -16,4 +16,4 @@ public class EventoObtenerBolas extends Evento {
         jugador.getInventario().addBolas(cantidad);
         System.out.println(jugador.getNombre() + " obtiene " + cantidad + " bolas de nieve.");
     }
-}
+ }
