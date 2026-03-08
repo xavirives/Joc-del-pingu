@@ -15,4 +15,4 @@ public class EventoPerderObjeto extends Evento {
         jugador.getInventario().perderObjetoAleatorio();
         System.out.println(jugador.getNombre() + " pierde un objeto aleatorio.");
     }
-}
+ }
