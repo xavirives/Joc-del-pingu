@@ -15,4 +15,4 @@ public class EventoPerderTurno extends Evento {
         jugador.setTurnoPerdido(true);
         System.out.println(jugador.getNombre() + " perderá el siguiente turno.");
     }
-}
+ }
