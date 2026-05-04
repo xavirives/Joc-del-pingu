@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 
 /** Controlador de la pantalla inicial. */
@@ -19,13 +21,17 @@ public class PantallaMenu {
     @FXML private MenuItem loadGame;
     @FXML private MenuItem quitGame;
     @FXML private TextField userField;
-    @FXML private TextField passField;
+    @FXML private PasswordField passField;
+    @FXML private ComboBox<String> numPlayersCombo;
     @FXML private Button loginButton;
     @FXML private Button registerButton;
 
     @FXML private void initialize() {
-        userField.setText("Jugador 1");
-        passField.setText("Jugador 2");
+        userField.setText("");
+        passField.setText("");
+        if (numPlayersCombo != null) {
+            numPlayersCombo.setValue("2");
+        }
     }
 
     @FXML private void handleNewGame(ActionEvent event) {
@@ -55,15 +61,25 @@ public class PantallaMenu {
     private void abrirJuego(ActionEvent event) {
         try {
             String nombre1 = userField.getText();
-            String nombre2 = passField.getText();
+            String password = passField.getText();
             if (nombre1 == null || nombre1.trim().isEmpty()) nombre1 = "Jugador 1";
-            if (nombre2 == null || nombre2.trim().isEmpty()) nombre2 = "Jugador 2";
+            
+            int numPlayers = 2;
+            if (numPlayersCombo != null && numPlayersCombo.getValue() != null) {
+                numPlayers = Integer.parseInt(numPlayersCombo.getValue());
+            }
+
+            java.util.List<String> nombres = new java.util.ArrayList<>();
+            nombres.add(nombre1);
+            for (int i = 2; i <= numPlayers; i++) {
+                nombres.add("Jugador " + i);
+            }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/PantallaJuego.fxml"));
             Parent root = loader.load();
 
             GestorPartida gestor = new GestorPartida();
-            gestor.nuevaPartida(nombre1, nombre2);
+            gestor.nuevaPartida(nombres);
             PantallaJuego controller = loader.getController();
             controller.setGestorPartida(gestor);
             controller.refrescarPantalla();

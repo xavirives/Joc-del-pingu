@@ -12,6 +12,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 /** Controlador de la pantalla del juego. */
 public class PantallaJuego {
@@ -40,20 +43,42 @@ public class PantallaJuego {
     private static final int COLUMNS = 5;
     private static final String TAG_CASILLA_TEXT = "CASILLA_TEXT";
 
+    // Cache de imagenes para las celdas
+    private Image imgOso;
+    private Image imgAgujero;
+    private Image imgTrineo;
+    private Image imgEvento;
+    private Image imgSueloQuebradizo;
+    private Image imgNormal;
+
     @FXML private void initialize() {
         if (P3 != null) P3.setVisible(false);
         if (P4 != null) P4.setVisible(false);
+
+        try {
+            imgOso = new Image(getClass().getResourceAsStream("/resources/imagenes/oso.png"));
+            imgAgujero = new Image(getClass().getResourceAsStream("/resources/imagenes/agujero.png"));
+            imgTrineo = new Image(getClass().getResourceAsStream("/resources/imagenes/trineo.png"));
+            imgEvento = new Image(getClass().getResourceAsStream("/resources/imagenes/evento.png"));
+            imgSueloQuebradizo = new Image(getClass().getResourceAsStream("/resources/imagenes/suelo_quebradizo.png"));
+            imgNormal = new Image(getClass().getResourceAsStream("/resources/imagenes/normal.png"));
+        } catch (Exception e) {
+            System.err.println("No se pudieron cargar algunas imágenes de las casillas: " + e.getMessage());
+        }
     }
 
     @FXML private void handleNewGame() {
-        String n1 = "Jugador 1";
-        String n2 = "Jugador 2";
+        java.util.List<String> nombres = new java.util.ArrayList<>();
         if (gestorPartida != null && gestorPartida.getPartida() != null) {
-            n1 = gestorPartida.getPartida().getJugadores().get(0).getNombre();
-            n2 = gestorPartida.getPartida().getJugadores().get(1).getNombre();
+            for (Jugador j : gestorPartida.getPartida().getJugadores()) {
+                nombres.add(j.getNombre());
+            }
+        } else {
+            nombres.add("Jugador 1");
+            nombres.add("Jugador 2");
         }
         gestorPartida = new GestorPartida();
-        gestorPartida.nuevaPartida(n1, n2);
+        gestorPartida.nuevaPartida(nombres);
         dadoResultText.setText("Ha salido: -");
         refrescarPantalla();
     }
@@ -112,6 +137,24 @@ public class PantallaJuego {
         Pinguino j2 = (Pinguino) partida.getJugadores().get(1);
         colocarFicha(P1, j1.getPosicion());
         colocarFicha(P2, j2.getPosicion());
+        P1.setVisible(true);
+        P2.setVisible(true);
+
+        if (partida.getJugadores().size() >= 3) {
+            Pinguino j3 = (Pinguino) partida.getJugadores().get(2);
+            colocarFicha(P3, j3.getPosicion());
+            P3.setVisible(true);
+        } else {
+            P3.setVisible(false);
+        }
+
+        if (partida.getJugadores().size() >= 4) {
+            Pinguino j4 = (Pinguino) partida.getJugadores().get(3);
+            colocarFicha(P4, j4.getPosicion());
+            P4.setVisible(true);
+        } else {
+            P4.setVisible(false);
+        }
 
         Pinguino actual = (Pinguino) partida.getJugadorActual();
         Inventario inv = actual.getInv();
@@ -140,23 +183,37 @@ public class PantallaJuego {
         tablero.getChildren().removeIf(node -> TAG_CASILLA_TEXT.equals(node.getUserData()));
         for (int i = 0; i < t.getCasillas().size(); i++) {
             Casilla casilla = t.getCasillas().get(i);
-            String tipo = nombreCorto(casilla);
-            Text texto = new Text(i + "\n" + tipo);
-            texto.setUserData(TAG_CASILLA_TEXT);
-            texto.getStyleClass().add("cell-type");
-            GridPane.setRowIndex(texto, i / COLUMNS);
-            GridPane.setColumnIndex(texto, i % COLUMNS);
-            tablero.getChildren().add(texto);
+            Image img = obtenerImagenCasilla(casilla);
+            
+            StackPane cellPane = new StackPane();
+            cellPane.setUserData(TAG_CASILLA_TEXT);
+            
+            if (img != null) {
+                ImageView imageView = new ImageView(img);
+                imageView.setFitWidth(50);
+                imageView.setFitHeight(50);
+                imageView.setPreserveRatio(true);
+                cellPane.getChildren().add(imageView);
+            }
+            
+            Text textoIndice = new Text(String.valueOf(i));
+            textoIndice.setStyle("-fx-font-weight: bold; -fx-fill: white; -fx-effect: dropshadow(gaussian, black, 2, 1.0, 0, 0);");
+            StackPane.setAlignment(textoIndice, javafx.geometry.Pos.TOP_LEFT);
+            cellPane.getChildren().add(textoIndice);
+
+            GridPane.setRowIndex(cellPane, i / COLUMNS);
+            GridPane.setColumnIndex(cellPane, i % COLUMNS);
+            tablero.getChildren().add(cellPane);
         }
     }
 
-    private String nombreCorto(Casilla c) {
-        if (c instanceof Oso) return "Oso";
-        if (c instanceof Agujero) return "Agujero";
-        if (c instanceof Trineo) return "Trineo";
-        if (c instanceof Evento) return "❓";
-        if (c instanceof SueloQuebradizo) return "Suelo Quebradizo";
-        return "Normal";
+    private Image obtenerImagenCasilla(Casilla c) {
+        if (c instanceof Oso) return imgOso;
+        if (c instanceof Agujero) return imgAgujero;
+        if (c instanceof Trineo) return imgTrineo;
+        if (c instanceof Evento) return imgEvento;
+        if (c instanceof SueloQuebradizo) return imgSueloQuebradizo;
+        return imgNormal;
     }
 
     private void colocarFicha(Circle ficha, int posicion) {

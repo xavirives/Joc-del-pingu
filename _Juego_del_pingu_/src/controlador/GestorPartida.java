@@ -21,16 +21,30 @@ public class GestorPartida {
     }
 
     public void nuevaPartida() {
-        nuevaPartida("Jugador 1", "Jugador 2");
+        java.util.List<String> nombres = new ArrayList<>();
+        nombres.add("Jugador 1");
+        nombres.add("Jugador 2");
+        nuevaPartida(nombres);
     }
 
     public void nuevaPartida(String nombre1, String nombre2) {
+        java.util.List<String> nombres = new ArrayList<>();
+        nombres.add(nombre1);
+        nombres.add(nombre2);
+        nuevaPartida(nombres);
+    }
+
+    public void nuevaPartida(java.util.List<String> nombres) {
         partida = new Partida();
         ArrayList<Jugador> jugadores = new ArrayList<Jugador>();
-        jugadores.add(new Pinguino(nombre1, "Azul", 0, new Inventario()));
-        jugadores.add(new Pinguino(nombre2, "Rojo", 0, new Inventario()));
+        String[] colores = {"Azul", "Rojo", "Verde", "Amarillo"};
+        
+        for (int i = 0; i < nombres.size(); i++) {
+            jugadores.add(new Pinguino(nombres.get(i), colores[i % colores.length], 0, new Inventario()));
+        }
+        
         partida.setJugadores(jugadores);
-        partida.setUltimoEvento("Nueva partida creada. Turno de " + nombre1 + ".");
+        partida.setUltimoEvento("Nueva partida creada con " + nombres.size() + " jugadores. Turno de " + nombres.get(0) + ".");
     }
 
     public int usarDadoNormal() {
@@ -82,41 +96,126 @@ public class GestorPartida {
     public void usarBolaDeNieve() {
         if (partida == null || partida.isFinalizada()) return;
         Pinguino actual = (Pinguino) partida.getJugadorActual();
-        Pinguino otro = (Pinguino) partida.getOtroJugador();
 
         if (!actual.getInv().removeCantidad("bola", 1)) {
             partida.setUltimoEvento("No tienes bolas de nieve.");
             return;
         }
 
-        otro.setPosicion(otro.getPosicion() - 3);
-        limitarPosicion(otro);
-        partida.setUltimoEvento(actual.getNombre() + " lanza una bola de nieve y " + otro.getNombre() + " retrocede 3 casillas.");
+        // Buscar el objetivo: el que está más cerca por delante, o si no hay nadie, el que va primero.
+        Pinguino objetivo = null;
+        int minDistanciaAdelante = Integer.MAX_VALUE;
+        Pinguino primero = null;
+        int maxPosicion = -1;
+
+        for (Jugador j : partida.getJugadores()) {
+            Pinguino p = (Pinguino) j;
+            if (p == actual) continue;
+            
+            if (p.getPosicion() > maxPosicion) {
+                maxPosicion = p.getPosicion();
+                primero = p;
+            }
+            
+            if (p.getPosicion() > actual.getPosicion()) {
+                int dist = p.getPosicion() - actual.getPosicion();
+                if (dist < minDistanciaAdelante) {
+                    minDistanciaAdelante = dist;
+                    objetivo = p;
+                }
+            }
+        }
+
+        if (objetivo == null) objetivo = primero; // Si va ganando, le da al que va más avanzado
+        if (objetivo == null) objetivo = (Pinguino) partida.getJugadores().get(0 == partida.getJugadorActualIndice() ? 1 : 0); // Fallback
+
+        objetivo.setPosicion(objetivo.getPosicion() - 3);
+        limitarPosicion(objetivo);
+        partida.setUltimoEvento(actual.getNombre() + " lanza una bola de nieve y " + objetivo.getNombre() + " retrocede 3 casillas.");
         siguienteTurno();
     }
 
     private void comprobarGuerra() {
-        Pinguino j1 = (Pinguino) partida.getJugadores().get(0);
-        Pinguino j2 = (Pinguino) partida.getJugadores().get(1);
-        if (j1.getPosicion() == 0 || j1.getPosicion() != j2.getPosicion()) return;
+        // Encontrar a todos los jugadores en la misma casilla
+        ArrayList<Pinguino> implicados = new ArrayList<>();
+        int maxPos = -1;
+        
+        for (Jugador j : partida.getJugadores()) {
+            Pinguino p = (Pinguino) j;
+            if (p.getPosicion() == 0) continue; // No hay guerra en la salida
+            
+            // Agrupar por posición
+            boolean encontrado = false;
+            for (Pinguino yaImplicado : implicados) {
+                if (yaImplicado.getPosicion() == p.getPosicion()) {
+                    implicados.add(p);
+                    encontrado = true;
+                    break;
+                }
+            }
+            if (!encontrado && implicados.isEmpty()) {
+                // Buscamos si hay otro en la misma posicion
+                for (Jugador j2 : partida.getJugadores()) {
+                    Pinguino p2 = (Pinguino) j2;
+                    if (p != p2 && p.getPosicion() == p2.getPosicion()) {
+                        implicados.add(p);
+                        break;
+                    }
+                }
+            } else if (!encontrado) {
+                 // Otra pelea en otro lado? Solo procesamos una pelea por turno (la del jugador actual)
+                 Pinguino actual = (Pinguino) partida.getJugadorActual();
+                 if (p.getPosicion() == actual.getPosicion()) {
+                     implicados.clear();
+                     implicados.add(p);
+                 }
+            }
+        }
+        
+        // Si hay una pelea donde está el jugador actual
+        Pinguino actual = (Pinguino) partida.getJugadorActual();
+        implicados.clear();
+        for (Jugador j : partida.getJugadores()) {
+             Pinguino p = (Pinguino) j;
+             if (p.getPosicion() > 0 && p.getPosicion() == actual.getPosicion()) {
+                 implicados.add(p);
+             }
+        }
 
-        int bolas1 = j1.getInv().getCantidad("bola");
-        int bolas2 = j2.getInv().getCantidad("bola");
-        j1.getInv().vaciarBolas();
-        j2.getInv().vaciarBolas();
+        if (implicados.size() < 2) return;
 
-        if (bolas1 > bolas2) {
-            int diferencia = bolas1 - bolas2;
-            j2.setPosicion(j2.getPosicion() - diferencia);
-            limitarPosicion(j2);
-            partida.setUltimoEvento("Guerra de nieve: gana " + j1.getNombre() + ". " + j2.getNombre() + " retrocede " + diferencia + ".");
-        } else if (bolas2 > bolas1) {
-            int diferencia = bolas2 - bolas1;
-            j1.setPosicion(j1.getPosicion() - diferencia);
-            limitarPosicion(j1);
-            partida.setUltimoEvento("Guerra de nieve: gana " + j2.getNombre() + ". " + j1.getNombre() + " retrocede " + diferencia + ".");
+        Pinguino ganador = null;
+        int maxBolas = -1;
+        boolean empate = false;
+
+        for (Pinguino p : implicados) {
+            int bolas = p.getInv().getCantidad("bola");
+            if (bolas > maxBolas) {
+                maxBolas = bolas;
+                ganador = p;
+                empate = false;
+            } else if (bolas == maxBolas) {
+                empate = true;
+            }
+        }
+
+        // Vaciar bolas de todos los implicados
+        for (Pinguino p : implicados) {
+            p.getInv().vaciarBolas();
+        }
+
+        if (empate) {
+            partida.setUltimoEvento("Guerra de nieve empatada. Todos en la casilla " + actual.getPosicion() + " pierden sus bolas de nieve.");
         } else {
-            partida.setUltimoEvento("Guerra de nieve empatada. Ambos pierden sus bolas de nieve.");
+            String perdedores = "";
+            for (Pinguino p : implicados) {
+                if (p != ganador) {
+                    p.setPosicion(p.getPosicion() - maxBolas);
+                    limitarPosicion(p);
+                    perdedores += p.getNombre() + " ";
+                }
+            }
+            partida.setUltimoEvento("Guerra de nieve: gana " + ganador.getNombre() + ". " + perdedores.trim() + " retroceden " + maxBolas + ".");
         }
     }
 

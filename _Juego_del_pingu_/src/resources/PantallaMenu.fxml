@@ -8,11 +8,15 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
 <BorderPane
     xmlns="http://javafx.com/javafx/21.0.10"
@@ -56,24 +60,38 @@
 
                 <Region prefHeight="8"/>
 
-                <!-- Formulario -->
+                <!-- Formulario Login -->
                 <VBox spacing="10">
-                    <Label text="Nombre Jugador 1" styleClass="field-label"/>
-                    <TextField fx:id="userField" promptText="Jugador 1" styleClass="field"/>
+                    <Label text="Usuario" styleClass="field-label"/>
+                    <TextField fx:id="userField" promptText="Nombre de usuario" styleClass="field"/>
 
-                    <Label text="Nombre Jugador 2" styleClass="field-label"/>
-                    <TextField fx:id="passField" promptText="Jugador 2" styleClass="field"/>
+                    <Label text="Contraseña" styleClass="field-label"/>
+                    <PasswordField fx:id="passField" promptText="Contraseña" styleClass="field"/>
+                    
+                    <Label text="Número de Jugadores" styleClass="field-label"/>
+                    <ComboBox fx:id="numPlayersCombo" maxWidth="Infinity" styleClass="field">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="2"/>
+                                <String fx:value="3"/>
+                                <String fx:value="4"/>
+                            </FXCollections>
+                        </items>
+                        <value>
+                            <String fx:value="2"/>
+                        </value>
+                    </ComboBox>
                 </VBox>
 
                 <Region prefHeight="6"/>
 
                 <!-- Botonera -->
                 <HBox spacing="10">
-                    <Button fx:id="loginButton" text="Nueva partida" onAction="#handleLogin" maxWidth="Infinity" styleClass="primary"/>
-                    <Button fx:id="registerButton" text="Salir" onAction="#handleQuitGame" maxWidth="Infinity"/>
+                    <Button fx:id="loginButton" text="Iniciar y Jugar" onAction="#handleLogin" maxWidth="Infinity" styleClass="primary" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="registerButton" text="Salir" onAction="#handleQuitGame" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                 </HBox>
 
-                <Label text="Partida preparada para 2 jugadores. La BBDD queda como plantilla para más adelante."
+                <Label text="Inicia sesión para jugar. Los demás jugadores se asignarán automáticamente."
                        styleClass="hint" wrapText="true"/>
             </VBox>
         </StackPane>
