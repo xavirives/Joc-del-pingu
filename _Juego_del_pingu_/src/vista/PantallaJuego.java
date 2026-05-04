@@ -8,6 +8,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import modelo.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /** Controlador de la pantalla del juego. */
 public class PantallaJuego {
@@ -121,6 +125,10 @@ public class PantallaJuego {
         eventos.setText(texto);
 
         boolean fin = partida.isFinalizada();
+        if (fin) {
+            mostrarPantallaGanador();
+            return;
+        }
         dado.setDisable(fin);
         rapido.setDisable(fin || inv.getCantidad("rapido") <= 0);
         lento.setDisable(fin || inv.getCantidad("lento") <= 0);
@@ -144,15 +152,34 @@ public class PantallaJuego {
 
     private String nombreCorto(Casilla c) {
         if (c instanceof Oso) return "Oso";
-        if (c instanceof Agujero) return "Forat";
-        if (c instanceof Trineo) return "Trineu";
-        if (c instanceof Evento) return "?";
-        if (c instanceof SueloQuebradizo) return "Gel";
+        if (c instanceof Agujero) return "Agujero";
+        if (c instanceof Trineo) return "Trineo";
+        if (c instanceof Evento) return "❓";
+        if (c instanceof SueloQuebradizo) return "Suelo Quebradizo";
         return "Normal";
     }
 
     private void colocarFicha(Circle ficha, int posicion) {
         GridPane.setRowIndex(ficha, posicion / COLUMNS);
         GridPane.setColumnIndex(ficha, posicion % COLUMNS);
+    }
+    private boolean pantallaGanadorMostrada = false;
+    private void mostrarPantallaGanador() {
+        if (pantallaGanadorMostrada) return;
+
+        try {
+            pantallaGanadorMostrada = true;
+
+            Parent root = FXMLLoader.load(getClass().getResource("/resources/has ganado.fxml"));
+            Stage stage = (Stage) dado.getScene().getWindow();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Has ganado");
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
