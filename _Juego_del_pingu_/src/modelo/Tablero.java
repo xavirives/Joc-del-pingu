@@ -1,10 +1,11 @@
 package modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
 /** Tablero de 50 casillas. */
-public class Tablero {
+public class Tablero implements Serializable {
     private ArrayList<Casilla> casillas;
 
     public Tablero() {

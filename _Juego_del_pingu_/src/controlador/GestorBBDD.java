@@ -30,9 +30,11 @@ public class GestorBBDD {
                 pstmtIns.executeUpdate();
             }
             p.setUltimoEvento("Partida guardada en Oracle.");
-        } catch (Exception e) {
-            System.err.println("Error BBDD: " + e.getMessage());
+        }  catch (Exception e) {
+            System.err.println("Error BBDD: " + e.toString()); // Cambia getMessage por toString
+            e.printStackTrace(); // Esto te dirá la línea exacta del fallo
         }
+
     }
 
     public Partida cargarBBDD(int id) {

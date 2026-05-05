@@ -1,6 +1,8 @@
 package modelo;
 
-public class Trineo extends Casilla {
+import java.io.Serializable;
+
+public class Trineo extends Casilla implements Serializable {
     public Trineo(int posicion) { super(posicion); }
     @Override public void realizarAccion(Partida partida, Pinguino jugador) {
         int siguiente = partida.getTablero().buscarTrineoSiguiente(posicion);

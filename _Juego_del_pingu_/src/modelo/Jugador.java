@@ -1,7 +1,9 @@
 package modelo;
 
+import java.io.Serializable;
+
 /** Clase base de un jugador del tablero. */
-public class Jugador {
+public class Jugador implements Serializable{
     protected int posicion;
     protected String nombre;
     protected String color;

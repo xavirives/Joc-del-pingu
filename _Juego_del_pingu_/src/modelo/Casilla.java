@@ -1,7 +1,9 @@
 package modelo;
 
+import java.io.Serializable;
+
 /** Casilla base del tablero. */
-public abstract class Casilla {
+public abstract class Casilla implements Serializable{
     protected int posicion;
 
     public Casilla(int posicion) { this.posicion = posicion; }

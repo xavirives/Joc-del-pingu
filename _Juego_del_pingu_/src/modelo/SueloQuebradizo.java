@@ -1,10 +1,12 @@
 package modelo;
 
+import java.io.Serializable;
+
 /** 
  * Casilla de Nivel Intermedio. 
  * El efecto varía según la carga del inventario del jugador.
  */
-public class SueloQuebradizo extends Casilla {
+public class SueloQuebradizo extends Casilla implements Serializable{
     
     public SueloQuebradizo(int posicion) { 
         super(posicion); 

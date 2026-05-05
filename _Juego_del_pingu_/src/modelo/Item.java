@@ -1,7 +1,9 @@
 package modelo;
 
+import java.io.Serializable;
+
 /** Clase base para los objetos del inventario. */
-public class Item {
+public class Item implements Serializable{
     private String nombre;
     private int cantidad;
 

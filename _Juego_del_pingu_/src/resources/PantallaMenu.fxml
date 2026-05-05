@@ -74,7 +74,8 @@
                     </ComboBox>
 
                     <!-- EL CHECKBOX VA AQUÍ FUERA DEL COMBOBOX -->
-                    <CheckBox fx:id="focaCheck" text="Incluir Foca (IA Enemiga)" styleClass="stat" />
+                  
+                <CheckBox fx:id="focaCheck" text="Incluir Foca (IA Enemiga)" styleClass="stat" />
                 </VBox>
 
                 <HBox spacing="10">
