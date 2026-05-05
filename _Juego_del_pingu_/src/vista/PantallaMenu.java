@@ -15,9 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.util.ArrayList;
 
-/** 
- * Controlador de la pantalla inicial con carga desde Oracle integrada.
- */
+
 public class PantallaMenu {
     @FXML private MenuItem newGame, saveGame, loadGame, quitGame;
     @FXML private TextField userField;
@@ -46,19 +44,15 @@ public class PantallaMenu {
         System.out.println("Guardado no disponible en el menú.");
     }
 
-    /** 
-     * CARGA REAL: Llama a Oracle y salta directamente al tablero.
-     */
+ 
     @FXML private void handleLoadGame(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/PantallaJuego.fxml"));
             Parent root = loader.load();
 
             GestorPartida gestor = new GestorPartida();
-            // Carga los datos desde la BBDD Oracle (Grup 08)
             gestor.cargarPartida(); 
 
-            // Si la carga falla (BBDD vacía), no saltamos para evitar errores
             if (gestor.getPartida() == null) {
                 System.err.println("No hay ninguna partida guardada en la base de datos.");
                 return;

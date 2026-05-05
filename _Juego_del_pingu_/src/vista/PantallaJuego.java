@@ -22,6 +22,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import modelo.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PantallaJuego {
@@ -92,7 +93,6 @@ public class PantallaJuego {
         if (gestorPartida == null || gestorPartida.getPartida() == null) return;
         Partida p = gestorPartida.getPartida();
         
-        // ⚠️ PASO MAESTRO: Ocultar la foca antes de comprobar si juega
         if (focaFicha != null) focaFicha.setVisible(false);
 
         for (int i = 0; i < p.getJugadores().size(); i++) {
@@ -100,7 +100,7 @@ public class PantallaJuego {
             Circle ficha = (j instanceof Foca) ? focaFicha : obtenerCirculo(i);
             
             if (ficha != null) {
-                ficha.setVisible(true); // Solo se hace visible si el jugador está en la lista
+                ficha.setVisible(true);
                 ficha.getStyleClass().remove("current-player");
                 if (i == p.getJugadorActualIndice()) ficha.getStyleClass().add("current-player");
 
@@ -207,26 +207,81 @@ public class PantallaJuego {
     }
 
     @FXML private void handleDado() {
+        if (gestorPartida.getPartida().isFinalizada()) return; 
+
         desactivarControles(true);
         int res = gestorPartida.usarDadoNormal();
-        if (res > 0) dadoResultText.setText("¡Lanzamiento: " + res + "!");
-        PauseTransition p = new PauseTransition(Duration.millis(500));
-        p.setOnFinished(e -> { refrescarPantalla(); desactivarControles(false); });
-        p.play();
+        
+        if (res > 0) {
+            dadoResultText.setText("¡Lanzamiento: " + res + "!");
+            
+            refrescarPantalla(); 
+
+            PauseTransition delayVictoria = new PauseTransition(Duration.millis(1000));
+            delayVictoria.setOnFinished(e -> {
+                if (gestorPartida.getPartida().isFinalizada()) {
+                    cargarPantallaVictoria();
+                } else {
+                    desactivarControles(false);
+                }
+            });
+            delayVictoria.play();
+        }
     }
-    @FXML private void handleRapido() { if (gestorPartida.usarDado("rapido") > 0) refrescarPantalla(); }
-    @FXML private void handleLento() { if (gestorPartida.usarDado("lento") > 0) refrescarPantalla(); }
-    @FXML private void handleNieve() { gestorPartida.usarBolaDeNieve(); refrescarPantalla(); }
+
+    private void verificarVictoria() {
+        if (gestorPartida.getPartida().isFinalizada()) {
+            PauseTransition delay = new PauseTransition(Duration.millis(800));
+            delay.setOnFinished(event -> cargarPantallaVictoria());
+            delay.play();
+        } else {
+            desactivarControles(false);
+        }
+    }
+
+    private void cargarPantallaVictoria() {
+        try {
+            if (mediaPlayer != null) mediaPlayer.stop();
+            
+            Parent root = FXMLLoader.load(getClass().getResource("/resources/has ganado.fxml"));
+            Stage stage = (Stage) dado.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("¡Fin de la partida!");
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error al cargar has ganado.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML private void handleRapido() { 
+        if (gestorPartida.usarDado("rapido") > 0) {
+            refrescarPantalla();
+            verificarVictoria();
+        }
+    }
+
+    @FXML private void handleLento() { 
+        if (gestorPartida.usarDado("lento") > 0) {
+            refrescarPantalla();
+            verificarVictoria();
+        }
+    }
+
+    @FXML private void handleNieve() { 
+        gestorPartida.usarBolaDeNieve(); 
+        refrescarPantalla(); 
+    }
+
     @FXML private void handlePeces() { eventos.setText("Los peces te protegen de osos y focas."); }
     @FXML private void handleQuitGame() { if (mediaPlayer != null) mediaPlayer.stop(); System.exit(0); }
     @FXML private void handleSaveGame() { gestorPartida.guardarPartida(); }
     @FXML private void handleLoadGame() { gestorPartida.cargarPartida(); refrescarPantalla(); }
     
     @FXML private void handleNewGame() {
-        // Al darle a "Archivo -> Nuevo", regresamos al menú para elegir si queremos foca
         try {
             if (mediaPlayer != null) mediaPlayer.stop();
-            Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/resources/PantallaMenu.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/resources/PantallaMenu.fxml"));
             Stage stage = (Stage) dado.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) { e.printStackTrace(); }

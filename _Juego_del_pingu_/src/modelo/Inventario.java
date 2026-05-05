@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-/** Inventario simple con límites del enunciado. */
 public class Inventario implements Serializable {
     private ArrayList<Item> lista;
 

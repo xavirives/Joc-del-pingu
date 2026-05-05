@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import modelo.*;
 
-/** 
- * Controlador central del juego.
- * Gestiona dados, inventario, turnos de la foca y persistencia en Oracle.
- */
+
 public class GestorPartida {
     private Partida partida;
     private GestorBBDD gestorBBDD = new GestorBBDD();
@@ -30,12 +27,10 @@ public class GestorPartida {
         partida.setUltimoEvento("¡Partida iniciada! Que gane el mejor.");
     }
 
-    // Método para el dado normal
     public int usarDadoNormal() {
         return usarDado("normal");
     }
 
-    // Método genérico para todos los dados (Soluciona el error en PantallaJuego)
     public int usarDado(String tipo) {
         if (partida == null || partida.isFinalizada()) return 0;
         Pinguino actual = (Pinguino) partida.getJugadorActual();
@@ -60,7 +55,6 @@ public class GestorPartida {
         return resultado;
     }
 
-    // Método para lanzar bolas de nieve (Soluciona el error en PantallaJuego)
     public void usarBolaDeNieve() {
         if (partida == null || partida.isFinalizada()) return;
         Pinguino actual = (Pinguino) partida.getJugadorActual();
@@ -83,13 +77,16 @@ public class GestorPartida {
     }
 
     private void moverJugador(Jugador j, int pasos) {
+        if (partida.isFinalizada()) return; 
+
         int nuevaPos = j.getPosicion() + pasos;
-        int ultima = 49;
+        int ultima = 49; 
         
         if (nuevaPos >= ultima) {
             j.setPosicion(ultima);
             partida.setFinalizada(true);
             partida.setGanador(j);
+            partida.setUltimoEvento("¡" + j.getNombre() + " ha ganado la partida!");
         } else {
             j.setPosicion(nuevaPos);
             Casilla c = partida.getTablero().getCasillas().get(j.getPosicion());

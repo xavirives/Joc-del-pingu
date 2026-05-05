@@ -1,8 +1,7 @@
 package modelo;
 
-import java.io.Serializable; // Importante
+import java.io.Serializable; 
 
-/** Jugador principal del juego. */
 public class Pinguino extends Jugador implements Serializable {
     private static final long serialVersionUID = 1L;
 

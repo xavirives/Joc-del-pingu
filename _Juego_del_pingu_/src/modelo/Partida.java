@@ -3,7 +3,6 @@ package modelo;
 import java.util.ArrayList;
 import java.io.Serializable;
 
-/** Guarda el estado completo de la partida. */
 public class Partida implements Serializable {
 	
 	 private static final long serialVersionUID = 1L;

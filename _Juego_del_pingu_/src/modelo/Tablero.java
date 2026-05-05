@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-/** Tablero de 50 casillas. */
 public class Tablero implements Serializable {
     private ArrayList<Casilla> casillas;
 
@@ -31,7 +30,6 @@ public class Tablero implements Serializable {
         }
         casillas.add(new Normal(49));
 
-        // Garantiza que siempre haya alguna casilla clave para probar el juego.
         casillas.set(5, new Evento(5));
         casillas.set(8, new Oso(8));
         casillas.set(12, new Agujero(12));

@@ -2,13 +2,12 @@ package modelo;
 
 import java.io.Serializable;
 
-/** Clase base de un jugador del tablero. */
 public class Jugador implements Serializable{
     protected int posicion;
     protected String nombre;
     protected String color;
     protected boolean pierdeTurno;
-    protected Inventario inv; // Ahora todos los jugadores tienen inventario
+    protected Inventario inv; 
 
     public Jugador(String nombre, String color, int posicion) {
         this.nombre = nombre;
