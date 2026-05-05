@@ -1,127 +1,156 @@
+/* ========================================= */
+/*       ESTILO GENERAL (MODERNO/ÁRTICO)     */
+/* ========================================= */
+
 .root {
-    -fx-font-family: "System";
-    -fx-background-color: #f6f7fb;
+    -fx-font-family: "Segoe UI", "System", sans-serif;
+    -fx-background-color: #f6f7fb; /* Gris muy claro azulado */
 }
 
-/* MENU */
+/* MENÚ SUPERIOR */
 .menu-bar {
     -fx-background-color: white;
     -fx-border-color: #e6e7ee;
     -fx-border-width: 0 0 1 0;
 }
 
-/* TABLERO */
+/* ========================================= */
+/*           TABLERO Y CASILLAS              */
+/* ========================================= */
+
 .board {
     -fx-background-color: white;
     -fx-background-radius: 14;
-    -fx-padding: 14;
+    -fx-padding: 10;
     -fx-border-color: #e6e7ee;
     -fx-border-radius: 14;
-
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.15, 0, 2);
+    /* Sombra suave para que el tablero parezca flotar */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 0, 4);
 }
 
-/* TEXTOS DEL TABLERO */
+/* Estilo para cada celda (StackPane) */
+.stack-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #f0f1f5;
+    -fx-border-width: 0.5;
+}
+
 .cell-title {
-    -fx-font-size: 22px;
-    -fx-opacity: 0.65;
-}
-
-.cell-type {
-    -fx-font-size: 12px;
+    -fx-font-size: 10px;
     -fx-font-weight: bold;
-    -fx-opacity: 0.85;
+    -fx-fill: #b0b3c2; /* Color de los números de casilla */
 }
 
-/* BARRA INFERIOR */
-.bottom-bar {
-    -fx-background-color: transparent;
-}
+/* ========================================= */
+/*          TARJETAS DE INFORMACIÓN          */
+/* ========================================= */
 
-/* TARJETAS */
 .card {
     -fx-background-color: white;
     -fx-background-radius: 14;
-    -fx-padding: 14;
+    -fx-padding: 15;
     -fx-border-color: #e6e7ee;
     -fx-border-radius: 14;
-
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 14, 0.15, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);
 }
 
 .card-title {
-    -fx-font-size: 16px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-opacity: 0.75;
+    -fx-text-fill: #4b5563;
+    -fx-opacity: 0.8;
 }
 
 .big-text {
-    -fx-font-size: 22px;
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
 }
 
 .stat {
-    -fx-font-size: 15px;
-    -fx-opacity: 0.85;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #374151;
 }
 
 .events {
-    -fx-font-size: 14px;
-    -fx-opacity: 0.85;
+    -fx-font-size: 13px;
+    -fx-text-fill: #6b7280;
+    -fx-font-style: italic;
 }
 
-/* BOTONES */
+/* ========================================= */
+/*                 BOTONES                   */
+/* ========================================= */
+
 .button {
     -fx-background-radius: 10;
-    -fx-padding: 8 14;
-    -fx-background-color: #eef0f6;
-    -fx-text-fill: #1f2330;
+    -fx-padding: 8 16;
+    -fx-background-color: #f3f4f6;
+    -fx-text-fill: #374151;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 .button:hover {
-    -fx-background-color: #e6e8f0;
+    -fx-background-color: #e5e7eb;
 }
 
 .button.primary {
-    -fx-background-color: #2f6fed;
+    -fx-background-color: #3b82f6; /* Azul principal */
     -fx-text-fill: white;
 }
 
 .button.primary:hover {
-    -fx-background-color: #295fd0;
+    -fx-background-color: #2563eb;
 }
 
-/* SCROLL */
-.objects-scroll {
-    -fx-background-color: transparent;
+.button:disabled {
+    -fx-opacity: 0.4;
 }
 
-.objects-scroll > .viewport {
-    -fx-background-color: transparent;
-}
-
-/* ========================= */
-/*        JUGADORES          */
-/* ========================= */
+/* ========================================= */
+/*        JUGADORES (FICHAS) Y TURNOS        */
+/* ========================================= */
 
 .player {
     -fx-stroke: white;
-    -fx-stroke-width: 3;
-
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 8, 0.35, 0, 2);
-
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+    -fx-stroke-width: 2.5;
+    /* Sombra para que las fichas resalten sobre las imágenes */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);
 }
 
-/* Colores por ID (robusto en JavaFX 21) */
-#P1 { -fx-fill: #2f6fed; }  /* azul */
-#P2 { -fx-fill: #ef4444; }  /* rojo */
-#P3 { -fx-fill: #22c55e; }  /* verde */
-#P4 { -fx-fill: #facc15; }  /* amarillo */
+/* Colores por ID */
+#P1 { -fx-fill: #3b82f6; } /* Azul */
+#P2 { -fx-fill: #ef4444; } /* Rojo */
+#P3 { -fx-fill: #10b981; } /* Verde */
+#P4 { -fx-fill: #f59e0b; } /* Amarillo/Naranja */
 
-/* Si quieres marcar el jugador activo, añade/quita esta clase desde Java */
+/* EFECTO JUGADOR ACTUAL: Brillo dorado animado */
 .current-player {
-    -fx-effect: dropshadow(gaussian, gold, 12, 0.6, 0, 0);
+    -fx-stroke: #fbbf24; /* Borde dorado */
+    -fx-stroke-width: 4;
+    -fx-effect: dropshadow(gaussian, #fbbf24, 15, 0.5, 0, 0);
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
 }
+
+/* SCROLLBAR (Opcional, para el inventario) */
+.objects-scroll {
+    -fx-background-color: transparent;
+}
+.objects-scroll .viewport {
+    -fx-background-color: transparent;
+}
+/* Añade esto a tu CSS */
+.winner-text {
+    -fx-font-size: 60px;
+    -fx-font-weight: bold;
+    -fx-fill: linear-gradient(to bottom, #2f6fed, #1565c0);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
+}
+
+.victory-pane {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #e3f2fd);
+}
+

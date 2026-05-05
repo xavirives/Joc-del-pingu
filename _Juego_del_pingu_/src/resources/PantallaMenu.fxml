@@ -9,6 +9,7 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -18,13 +19,7 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 
-<BorderPane
-    xmlns="http://javafx.com/javafx/21.0.10"
-    xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="vista.PantallaMenu"
-    stylesheets="@PantallaMenu.css"
-    styleClass="root">
-
+<BorderPane xmlns="http://javafx.com/javafx/21.0.10" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vista.PantallaMenu" stylesheets="@PantallaMenu.css" styleClass="root">
     <top>
         <MenuBar>
             <menus>
@@ -53,14 +48,10 @@
                     <Insets top="18" right="18" bottom="18" left="18"/>
                 </padding>
 
-                <!-- Cabecera -->
                 <VBox spacing="6" alignment="CENTER">
                     <Label text="EL JUEGO DEL PINGÜINO" styleClass="title" wrapText="true"/>
                 </VBox>
 
-                <Region prefHeight="8"/>
-
-                <!-- Formulario Login -->
                 <VBox spacing="10">
                     <Label text="Usuario" styleClass="field-label"/>
                     <TextField fx:id="userField" promptText="Nombre de usuario" styleClass="field"/>
@@ -81,20 +72,18 @@
                             <String fx:value="2"/>
                         </value>
                     </ComboBox>
+
+                    <!-- EL CHECKBOX VA AQUÍ FUERA DEL COMBOBOX -->
+                    <CheckBox fx:id="focaCheck" text="Incluir Foca (IA Enemiga)" styleClass="stat" />
                 </VBox>
 
-                <Region prefHeight="6"/>
-
-                <!-- Botonera -->
                 <HBox spacing="10">
                     <Button fx:id="loginButton" text="Iniciar y Jugar" onAction="#handleLogin" maxWidth="Infinity" styleClass="primary" HBox.hgrow="ALWAYS"/>
                     <Button fx:id="registerButton" text="Salir" onAction="#handleQuitGame" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                 </HBox>
 
-                <Label text="Inicia sesión para jugar. Los demás jugadores se asignarán automáticamente."
-                       styleClass="hint" wrapText="true"/>
+                <Label text="Inicia sesión para jugar. Los demás jugadores se asignarán automáticamente." styleClass="hint" wrapText="true"/>
             </VBox>
         </StackPane>
     </center>
-
 </BorderPane>

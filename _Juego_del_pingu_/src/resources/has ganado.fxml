@@ -1,48 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="400.0" prefWidth="640.0"
-      xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
+<VBox prefHeight="400.0" prefWidth="640.0" 
+      styleClass="root" 
+      stylesheets="@PantallaJuego.css" 
+      xmlns="http://javafx.com" 
+      xmlns:fx="http://javafx.com" 
       fx:controller="vista.PantallaGanador">
 
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu mnemonicParsing="false" text="File">
+        <Menu mnemonicParsing="false" text="Archivo">
           <items>
-            <MenuItem mnemonicParsing="false" text="Quit" />
+            <MenuItem mnemonicParsing="false" onAction="#handleReiniciar" text="Volver al Menú" />
           </items>
         </Menu>
       </menus>
     </MenuBar>
 
-    <AnchorPane VBox.vgrow="ALWAYS">
+    <AnchorPane styleClass="card" VBox.vgrow="ALWAYS">
       <children>
-
-        <Text layoutX="120.0" layoutY="130.0"
-              text="HAS GANADO"
-              wrappingWidth="400">
+        
+        <Text layoutX="120.0" layoutY="160.0" 
+              styleClass="big-text" 
+              text="¡HAS GANADO!" 
+              textAlignment="CENTER" 
+              wrappingWidth="400.0">
           <font>
-            <Font size="52.0" />
+            <Font name="System Bold" size="52.0" />
           </font>
         </Text>
 
-        <Button layoutX="220.0" layoutY="260.0"
-                prefHeight="50.0"
-                prefWidth="200.0"
-                text="JUGAR DE NUEVO"
-                onAction="#handleReiniciar" />
+        <Text layoutX="120.0" layoutY="200.0" 
+              styleClass="events" 
+              text="¡Enhorabuena! Has llegado al final del camino." 
+              textAlignment="CENTER" 
+              wrappingWidth="400.0" />
+
+        <Button layoutX="220.0" layoutY="260.0" 
+                onAction="#handleReiniciar" 
+                prefHeight="50.0" 
+                prefWidth="200.0" 
+                styleClass="primary" 
+                text="JUGAR DE NUEVO" />
 
       </children>
     </AnchorPane>

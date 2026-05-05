@@ -8,28 +8,28 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import java.util.ArrayList;
 
-/** Controlador de la pantalla inicial. */
+/** 
+ * Controlador de la pantalla inicial con carga desde Oracle integrada.
+ */
 public class PantallaMenu {
-    @FXML private MenuItem newGame;
-    @FXML private MenuItem saveGame;
-    @FXML private MenuItem loadGame;
-    @FXML private MenuItem quitGame;
+    @FXML private MenuItem newGame, saveGame, loadGame, quitGame;
     @FXML private TextField userField;
     @FXML private PasswordField passField;
     @FXML private ComboBox<String> numPlayersCombo;
-    @FXML private Button loginButton;
-    @FXML private Button registerButton;
+    @FXML private Button loginButton, registerButton;
 
     @FXML private void initialize() {
-        userField.setText("");
-        passField.setText("");
+        if (userField != null) userField.setText("");
         if (numPlayersCombo != null) {
+            numPlayersCombo.getItems().clear();
+            numPlayersCombo.getItems().addAll("2", "3", "4");
             numPlayersCombo.setValue("2");
         }
     }
@@ -38,39 +38,66 @@ public class PantallaMenu {
         abrirJuego(event);
     }
 
-    @FXML private void handleSaveGame() {
-        System.out.println("La BBDD se implementará más adelante.");
+    @FXML private void handleLogin(ActionEvent event) {
+        abrirJuego(event);
     }
 
+    @FXML private void handleSaveGame() {
+        System.out.println("Guardado no disponible en el menú.");
+    }
+
+    /** 
+     * CARGA REAL: Llama a Oracle y salta directamente al tablero.
+     */
     @FXML private void handleLoadGame(ActionEvent event) {
-        abrirJuego(event);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/PantallaJuego.fxml"));
+            Parent root = loader.load();
+
+            GestorPartida gestor = new GestorPartida();
+            // Carga los datos desde la BBDD Oracle (Grup 08)
+            gestor.cargarPartida(); 
+
+            // Si la carga falla (BBDD vacía), no saltamos para evitar errores
+            if (gestor.getPartida() == null) {
+                System.err.println("No hay ninguna partida guardada en la base de datos.");
+                return;
+            }
+
+            PantallaJuego controller = loader.getController();
+            controller.setGestorPartida(gestor);
+            controller.refrescarPantalla(); 
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("El Joc d'en Pingu - Partida Cargada");
+            stage.show();
+        } catch (Exception e) {
+            System.err.println("Error al cargar la partida desde el menú.");
+            e.printStackTrace();
+        }
     }
 
     @FXML private void handleQuitGame() {
         System.exit(0);
     }
 
-    @FXML private void handleLogin(ActionEvent event) {
-        abrirJuego(event);
-    }
-
     @FXML private void handleRegister() {
-        System.out.println("Registro pendiente de la parte de BBDD.");
+        System.out.println("Registro pendiente de implementación.");
     }
 
     private void abrirJuego(ActionEvent event) {
         try {
-            String nombre1 = userField.getText();
-            String password = passField.getText();
-            if (nombre1 == null || nombre1.trim().isEmpty()) nombre1 = "Jugador 1";
+            String nombrePrincipal = (userField != null && !userField.getText().isEmpty()) 
+                                     ? userField.getText() : "Jugador 1";
             
             int numPlayers = 2;
             if (numPlayersCombo != null && numPlayersCombo.getValue() != null) {
                 numPlayers = Integer.parseInt(numPlayersCombo.getValue());
             }
 
-            java.util.List<String> nombres = new java.util.ArrayList<>();
-            nombres.add(nombre1);
+            ArrayList<String> nombres = new ArrayList<>();
+            nombres.add(nombrePrincipal);
             for (int i = 2; i <= numPlayers; i++) {
                 nombres.add("Jugador " + i);
             }
@@ -79,15 +106,17 @@ public class PantallaMenu {
             Parent root = loader.load();
 
             GestorPartida gestor = new GestorPartida();
-            gestor.nuevaPartida(nombres);
+            gestor.nuevaPartida(nombres, true); 
+
             PantallaJuego controller = loader.getController();
             controller.setGestorPartida(gestor);
             controller.refrescarPantalla();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("El Joc d'en Pingu");
+            stage.setTitle("El Joc d'en Pingu - Partida");
             stage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
