@@ -78,14 +78,14 @@ public class PantallaJuego {
             mediaPlayer.play();
         } catch (Exception e) { }
     }
-
+//Esta funcion sirve para hacer el tablero en zig zag.
     private int getColZigZag(int p) { int f = p / COLUMNS; int c = p % COLUMNS; return (f % 2 != 0) ? (COLUMNS - 1) - c : c; }
     private int getRowZigZag(int p) { return p / COLUMNS; }
     private int calcularIndiceDesdeGrid(int c, int r) { 
         int b = r * COLUMNS; 
         return (r % 2 != 0) ? (b + (COLUMNS - 1 - c)) : (b + c); 
     }
-    
+//Este metodo sirve para separar visualmente las fichas cuando hay varias en la misma casilla    
     private double getOffsetX(int i) { return (i == 0 || i == 2) ? -15 : 15; }
     private double getOffsetY(int i) { return (i == 0 || i == 1) ? -15 : 15; }
 

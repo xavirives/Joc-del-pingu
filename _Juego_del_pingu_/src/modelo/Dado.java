@@ -2,7 +2,6 @@ package modelo;
 
 import java.util.Random;
 
-/** Dado sencillo con mínimo y máximo. */
 public class Dado extends Item {
     private int min;
     private int max;
